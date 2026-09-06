@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parent-U — Website Flow Prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1E2440;
+    --ink-soft: #2E3763;
+    --paper: #E6E4EC;
+    --card: #F6F5F2;
+    --sage: #74876A;
+    --sage-deep: #566249;
+    --line: #C9C6D6;
+    --muted: #6B6E85;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif{ font-family:'Fraunces', serif; }
+  a{ text-decoration:none; color:inherit; }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding: 40px 32px 80px;
+  }
+
+  header.top{
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-soft) 100%);
+    border-radius:24px;
+    padding:56px 52px;
+    margin-bottom:40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:32px;
+    flex-wrap:wrap;
+  }
+  header.top .kicker{
+    color: #B9C4A8;
+    font-size:13.5px;
+    font-weight:600;
+    margin-bottom:14px;
+  }
+  header.top h1{
+    font-size:46px;
+    line-height:1.08;
+    margin:0 0 16px;
+    color:#F6F5F2;
+    max-width:640px;
+  }
+  header.top p{
+    margin:0;
+    color:#C9CADA;
+    font-size:16px;
+    line-height:1.6;
+    max-width:460px;
+  }
+  .badge{
+    font-size:13px; color:#F6F5F2; border:1px solid rgba(246,245,242,0.35);
+    border-radius:100px; padding:9px 20px 9px 16px; background:rgba(246,245,242,0.08);
+    white-space:nowrap; display:flex; align-items:center; gap:8px;
+  }
+  .badge .dot{ width:7px; height:7px; border-radius:50%; background:var(--sage); flex-shrink:0; }
+
+  /* ---- Flow rail ---- */
+  .rail{ display:flex; align-items:center; gap:0; margin-bottom:40px; overflow-x:auto; padding-bottom:8px; }
+  .rail-step{
+    display:flex; align-items:center; gap:10px; flex-shrink:0; cursor:pointer;
+    padding:8px 6px; border:none; background:none; font-family:'Inter', sans-serif;
+  }
+  .rail-dot{
+    width:34px; height:34px; border-radius:50%; border:1.5px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600;
+    color:var(--ink); background:transparent; transition: all .15s ease;
+  }
+  .rail-step.active .rail-dot{ background:var(--ink); color:var(--paper); }
+  .rail-step:not(.active):hover .rail-dot{ border-color: var(--sage-deep); color: var(--sage-deep); }
+  .rail-label{ font-size:13px; color:var(--muted); max-width:100px; line-height:1.25; text-align:left; }
+  .rail-step.active .rail-label{ color:var(--ink); font-weight:600; }
+  .rail-connector{ width:36px; height:1px; background:var(--line); flex-shrink:0; }
+
+  /* ---- Browser frame (the "website") ---- */
+  .browser-frame{
+    width:100%;
+    max-width:960px;
+    margin:0 auto;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow: 0 30px 60px -24px rgba(30,36,64,0.4);
+    background:#fff;
+  }
+  .browser-chrome{
+    display:flex; align-items:center; gap:12px;
+    background:#DBD8E2; padding:10px 14px;
+  }
+  .dots{ display:flex; gap:6px; }
+  .dots span{ width:10px; height:10px; border-radius:50%; background:#B8B4C4; }
+  .browser-url{
+    flex:1; background:#fff; border-radius:6px; padding:6px 14px;
+    font-size:12px; color:var(--muted); font-family:'Inter',sans-serif;
+  }
+  .site{ min-height:560px; }
+
+  /* site chrome shared across screens */
+  .site-nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 36px; border-bottom:1px solid var(--line);
+  }
+  .site-logo{ font-family:'Fraunces', serif; font-size:19px; letter-spacing:0.5px; }
+  .site-links{ display:flex; gap:28px; font-size:13.5px; color:var(--ink-soft); }
+  .site-links a.current{ color:var(--ink); font-weight:600; }
+  .nav-cta{
+    font-size:12.5px; font-weight:600; padding:8px 18px; border-radius:8px;
+    background:var(--ink); color:var(--paper); border:none;
+  }
+
+  .site-body{ padding:44px 36px 40px; }
+
+  /* Hero (screen 1) */
+  .hero{ display:grid; grid-template-columns: 1.1fr 0.9fr; gap:48px; align-items:center; }
+  @media (max-width:720px){ .hero{ grid-template-columns:1fr; } }
+  .hero h2{ font-size:38px; line-height:1.12; margin:0 0 16px; }
+  .hero p.lead{ font-size:15.5px; color:var(--ink-soft); line-height:1.6; margin:0 0 24px; max-width:420px; }
+  .hero-visual{
+    background: linear-gradient(160deg, var(--ink) 0%, var(--ink-soft) 100%);
+    border-radius:16px; height:260px;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--paper); font-family:'Fraunces',serif; font-size:15px; text-align:center; padding:20px;
+  }
+  .pillars{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:44px; }
+  @media (max-width:720px){ .pillars{ grid-template-columns:1fr; } }
+  .pillar{ border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .pillar .t{ font-weight:600; font-size:13.5px; margin-bottom:6px; }
+  .pillar .d{ font-size:12.5px; color:var(--muted); line-height:1.5; }
+
+  /* Stage picker (screen 2) */
+  .page-title{ font-size:26px; margin:0 0 6px; }
+  .page-sub{ font-size:14px; color:var(--muted); margin:0 0 28px; }
+  .stage-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:720px){ .stage-grid{ grid-template-columns:1fr 1fr; } }
+  .stage-card{
+    border:1.5px solid var(--line); border-radius:14px; padding:20px; cursor:pointer; background:#fff;
+  }
+  .stage-card.selected{ border-color:var(--sage-deep); background:#EEF1E9; }
+  .stage-card .swatch{ width:34px; height:34px; border-radius:9px; background:var(--ink-soft); margin-bottom:14px; }
+  .stage-card.selected .swatch{ background:var(--sage-deep); }
+  .stage-card .name{ font-weight:600; font-size:14px; margin-bottom:4px; }
+  .stage-card .sub{ font-size:12px; color:var(--muted); }
+  .continue-row{ margin-top:30px; display:flex; justify-content:flex-end; }
+
+  /* Learning mode (screen 3) */
+  .mode-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  @media (max-width:720px){ .mode-grid{ grid-template-columns:1fr; } }
+  .mode-card2{ border:1px solid var(--line); border-radius:14px; padding:24px; background:#fff; }
+  .mode-card2 .name{ font-family:'Fraunces',serif; font-size:18px; margin-bottom:10px; }
+  .mode-card2 .desc{ font-size:13px; color:var(--muted); line-height:1.55; margin-bottom:14px; }
+  .mode-card2 .tag{
+    display:inline-block; font-size:10.5px; color:var(--sage-deep);
+    border:1px solid var(--sage-deep); border-radius:100px; padding:3px 10px;
+  }
+
+  /* Dashboard (screen 4) */
+  .app-shell{ display:grid; grid-template-columns:200px 1fr; min-height:520px; }
+  .side{ border-right:1px solid var(--line); padding:28px 20px; }
+  .side .item{ font-size:13.5px; padding:9px 10px; border-radius:8px; color:var(--ink-soft); margin-bottom:2px; }
+  .side .item.active{ background:var(--paper); color:var(--ink); font-weight:600; }
+  .main-col{ padding:32px 36px; }
+  .dash-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:6px; }
+  .progress-track{ height:6px; background:var(--line); border-radius:10px; overflow:hidden; margin:14px 0 26px; }
+  .progress-fill{ height:100%; background:var(--sage-deep); width:38%; }
+  .module-row{ display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--line); }
+  .module-row:last-child{ border-bottom:none; }
+  .module-dot{ width:28px; height:28px; border-radius:50%; background:var(--paper); display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:600; color:var(--ink); flex-shrink:0; }
+  .module-dot.done{ background:var(--sage-deep); color:#fff; }
+  .module-title{ font-size:13.5px; font-weight:600; }
+  .module-meta{ font-size:11.5px; color:var(--muted); }
+
+  /* Community (screen 5) */
+  .community-shell{ display:grid; grid-template-columns:200px 1fr 220px; min-height:520px; }
+  .filter-list .filter-item{ font-size:13px; padding:8px 10px; border-radius:8px; color:var(--ink-soft); }
+  .filter-list .filter-item.active{ background:var(--paper); color:var(--ink); font-weight:600; }
+  .feed-col{ padding:28px 32px; border-left:1px solid var(--line); border-right:1px solid var(--line); }
+  .post{ border-bottom:1px solid var(--line); padding:16px 0; }
+  .post .who{ font-size:13.5px; font-weight:600; }
+  .post .stage-tag{ font-size:10.5px; color:var(--sage-deep); font-weight:600; }
+  .post .body{ font-size:13px; color:var(--ink-soft); margin-top:5px; line-height:1.55; }
+  .post .meta{ font-size:11px; color:var(--muted); margin-top:8px; }
+  .side-panel{ padding:28px 20px; }
+  .side-panel .h{ font-size:12px; font-weight:600; color:var(--muted); margin-bottom:12px; }
+  .online-row{ display:flex; align-items:center; gap:8px; font-size:12.5px; margin-bottom:10px; }
+  .online-dot{ width:8px; height:8px; border-radius:50%; background:var(--sage-deep); }
+  .avatar-sm{ width:24px; height:24px; border-radius:50%; background:var(--ink-soft); }
+
+  /* Support (screen 6) */
+  .support-shell{ display:grid; grid-template-columns:220px 1fr; min-height:520px; }
+  .specialist{ padding:28px 20px; border-right:1px solid var(--line); }
+  .avatar-lg{ width:56px; height:56px; border-radius:50%; background:var(--ink); margin-bottom:14px; }
+  .chat-col{ display:flex; flex-direction:column; padding:28px 32px; }
+  .support-bubble{ background:var(--paper); border-radius:12px; padding:12px 16px; font-size:13px; margin-bottom:12px; max-width:70%; }
+  .support-bubble.human{ background:var(--sage-deep); color:#fff; margin-left:auto; }
+  .chat-input{ margin-top:auto; display:flex; gap:10px; border-top:1px solid var(--line); padding-top:16px; }
+  .chat-input input{ flex:1; border:1px solid var(--line); border-radius:8px; padding:10px 14px; font-size:13px; font-family:'Inter',sans-serif; }
+
+  .cta-btn{
+    font-family:'Inter', sans-serif; font-size:13.5px; font-weight:600; padding:11px 22px;
+    border-radius:8px; border:1px solid var(--ink); background:var(--ink); color:var(--paper); cursor:pointer;
+  }
+  .cta-btn.ghost{ background:transparent; color:var(--ink); }
+
+  /* ---- Notes panel ---- */
+  .notes{ max-width:960px; margin:40px auto 0; }
+  .notes .eyebrow{ font-size:13px; color: var(--sage-deep); font-weight:600; margin-bottom:10px; }
+  .notes h2{ font-size:24px; margin:0 0 12px; }
+  .notes p{ color:var(--ink-soft); line-height:1.65; font-size:15px; margin:0 0 14px; max-width:640px; }
+  .notes ul{ margin:0 0 18px; padding-left:18px; color:var(--ink-soft); font-size:14.5px; line-height:1.7; }
+  .nav-buttons{ display:flex; gap:12px; margin-top:8px; }
+  .btn{
+    font-family:'Inter', sans-serif; font-size:14px; font-weight:600; padding:11px 20px;
+    border-radius:8px; border:1px solid var(--ink); background:var(--ink); color:var(--paper); cursor:pointer;
+  }
+  .btn.ghost{ background:transparent; color:var(--ink); }
+  .btn:disabled{ opacity:0.35; cursor:default; }
+
+  footer.credit{
+    margin-top:56px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="kicker">PARENT-U</div>
+      <h1 class="serif">Where we build relationships, not trophies.</h1>
+      <p>Click through exactly what a parent experiences — from the moment they land on the site to messaging a real specialist.</p>
+    </div>
+    <div class="badge"><span class="dot"></span>6 screens · click to explore</div>
+  </header>
+
+  <div class="rail" id="rail"></div>
+
+  <div class="browser-frame">
+    <div class="browser-chrome">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="browser-url" id="urlBar">parent-u.com</div>
+    </div>
+    <div class="site" id="siteInner"></div>
+  </div>
+
+  <div class="notes">
+    <div class="eyebrow" id="noteEyebrow"></div>
+    <h2 class="serif" id="noteTitle"></h2>
+    <p id="noteBody"></p>
+    <ul id="noteList"></ul>
+    <div class="nav-buttons">
+      <button class="btn ghost" id="prevBtn">Back</button>
+      <button class="btn" id="nextBtn">Next step</button>
+    </div>
+  </div>
+
+  <footer class="credit">
+    <span>Parent-U · Shannon &amp; Hamzi</span>
+    <span>Prototype for internal review — not final visual design</span>
+  </footer>
+</div>
+
+<script>
+const nav = (current) => `
+  <nav class="site-nav">
+    <div class="site-logo">PARENT-U</div>
+    <div class="site-links">
+      <a class="${current==='courses'?'current':''}">Courses</a>
+      <a class="${current==='community'?'current':''}">Community</a>
+      <a class="${current==='support'?'current':''}">Support</a>
+    </div>
+    <button class="nav-cta">Log in</button>
+  </nav>
+`;
+
+const steps = [
+  {
+    key: 'welcome', label: 'Welcome', url: 'parent-u.com',
+    eyebrow: 'Page 1 — Landing', title: 'First open',
+    body: "The homepage carries the one differentiator that matters: this isn't a course about raising a high-achiever, it's a course about staying close to your kid. Everything downstream — targeting, course library, community — hangs off that promise.",
+    list: [
+      'One clear CTA above the fold, no account wall yet — reduces drop-off before visitors understand the offer',
+      'Three pillar cards below the fold preview accessibility, teaching mode and community, so a scrolling visitor gets the full pitch without clicking'
+    ],
+    render: () => `
+      ${nav('home')}
+      <div class="site-body">
+        <div class="hero">
+          <div>
+            <h2 class="serif">Where we build<br>relationships, not trophies.</h2>
+            <p class="lead">Parent-U is a course for every stage of parenting — from expecting your first, to letting go of your last. Recorded lessons, live sessions, and real humans, all in one place.</p>
+            <button class="cta-btn" onclick="go(1)">Get started</button>
+          </div>
+          <div class="hero-visual">Illustration placeholder<br>(parent &amp; child, warm tone)</div>
+        </div>
+        <div class="pillars">
+          <div class="pillar"><div class="t">Accessible online</div><div class="d">Available to parents wherever they are, on any device.</div></div>
+          <div class="pillar"><div class="t">Balanced teaching</div><div class="d">Recorded, live, and human support — pick what fits the moment.</div></div>
+          <div class="pillar"><div class="t">Real community</div><div class="d">Parents in the same stage, discussing the same questions.</div></div>
+        </div>
+      </div>
+    `
+  },
+  {
+    key: 'stage', label: 'Pick your stage', url: 'parent-u.com/get-started',
+    eyebrow: 'Page 2 — Targeting', title: 'Which stage are you in?',
+    body: 'This is the crux of the "targeted course" pillar. Picking a stage here is what lets us route someone into the right lesson track and the right community — instead of one generic curriculum for a newborn and a 17-year-old.',
+    list: [
+      'Six tracks straight from the deck: prospective parent through young adults 18+',
+      'Selection persists — reused later to filter both the course library and the community feed'
+    ],
+    render: () => `
+      ${nav('')}
+      <div class="site-body">
+        <div class="page-title serif">Which stage are you in?</div>
+        <div class="page-sub">We'll tailor lessons, live sessions and your community to this. You can add more stages later.</div>
+        <div class="stage-grid">
+          ${['Prospective parent','Infant · 0–5','Child · 5–10','Preteen · 10–13','Teen · 13–18','Young adult · 18+'].map((t,i)=>`
+            <div class="stage-card ${i===1?'selected':''}" onclick="selectCard(this)">
+              <div class="swatch"></div>
+              <div class="name">${t}</div>
+              <div class="sub">${i===1?'Sleep, attachment, early boundaries':'Tap to select'}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="continue-row"><button class="cta-btn" onclick="go(2)">Continue</button></div>
+      </div>
+    `
+  },
+  {
+    key: 'mode', label: 'Choose how you learn', url: 'parent-u.com/get-started/learning-style',
+    eyebrow: 'Page 3 — Learning mode', title: 'Recorded, live, or human',
+    body: 'This page demonstrates the "balanced teaching mode" pillar. Rather than forcing one format, a parent picks a mix — scalable recorded content for the basics, live sessions for real-time discussion, and 1:1 human support for anything a video can\'t answer.',
+    list: [
+      'Recorded and live are bundled into the course price; human support is the upsell / retention lever',
+      'This is also where Dr. Shen\'s existing curriculum (FAQ 1) would sit, once localised'
+    ],
+    render: () => `
+      ${nav('')}
+      <div class="site-body">
+        <div class="page-title serif">How do you want to learn?</div>
+        <div class="page-sub">Pick as many as you like — most parents use all three at different points.</div>
+        <div class="mode-grid">
+          <div class="mode-card2"><div class="name">Recorded lessons</div><div class="desc">Bite-sized videos you can watch on your own time, organised by stage.</div><span class="tag">Self-paced</span></div>
+          <div class="mode-card2"><div class="name">Live lessons</div><div class="desc">Weekly sessions with real-time Q&amp;A alongside other parents in your stage.</div><span class="tag">Group · interactive</span></div>
+          <div class="mode-card2"><div class="name">Human support</div><div class="desc">1:1 chat with a specialist for questions specific to your situation.</div><span class="tag">Personalised</span></div>
+        </div>
+        <div class="continue-row"><button class="cta-btn" onclick="go(3)">Build my course</button></div>
+      </div>
+    `
+  },
+  {
+    key: 'course', label: 'Course home', url: 'parent-u.com/app/course',
+    eyebrow: 'Page 4 — Learning dashboard', title: 'Inside the course',
+    body: 'Once enrolled, this is home base. It needs to make progress visible for retention, and always leave a door open to the other two teaching modes and the community, so the product doesn\'t feel like a video library that gets abandoned after week two.',
+    list: [
+      'Progress bar + module checklist for the "relationship, not trophies" track for infants 0–5',
+      'Left-hand nav is the connective tissue to Community, Support and Profile'
+    ],
+    render: () => `
+      ${nav('courses')}
+      <div class="app-shell">
+        <div class="side">
+          <div class="item active">My course</div>
+          <div class="item">Community</div>
+          <div class="item">Support</div>
+          <div class="item">Profile</div>
+        </div>
+        <div class="main-col">
+          <div class="dash-head">
+            <div>
+              <div class="page-title serif" style="font-size:22px;">Building attachment, 0–5</div>
+              <div class="page-sub" style="margin:0;">Module 3 of 8 · Recorded track</div>
+            </div>
+          </div>
+          <div class="progress-track"><div class="progress-fill"></div></div>
+          <div class="module-row"><div class="module-dot done">✓</div><div><div class="module-title">Why "good" behaviour isn't the goal</div><div class="module-meta">Recorded · 9 min</div></div></div>
+          <div class="module-row"><div class="module-dot done">✓</div><div><div class="module-title">Reading your child's cues</div><div class="module-meta">Recorded · 12 min</div></div></div>
+          <div class="module-row"><div class="module-dot">3</div><div><div class="module-title">Live Q&amp;A: tantrums &amp; transitions</div><div class="module-meta">Live · Thu, 8pm</div></div></div>
+          <div class="module-row"><div class="module-dot">4</div><div><div class="module-title">Repair after conflict</div><div class="module-meta">Recorded · 11 min</div></div></div>
+          <div style="margin-top:20px;"><button class="cta-btn" onclick="go(4)">Go to community</button></div>
+        </div>
+      </div>
+    `
+  },
+  {
+    key: 'community', label: 'Community', url: 'parent-u.com/app/community',
+    eyebrow: 'Page 5 — Community', title: 'A feed of parents like you',
+    body: 'This answers the deck\'s FAQ 2 — why pay when free resources exist. Free content is everywhere; a community of parents in the same stage, plus real humans who respond, is the part that\'s hard to copy.',
+    list: [
+      'Feed is filtered by the stage picked earlier, so a 0–5 parent isn\'t reading teen threads',
+      'Right-hand panel nudges straight into Human Support — the two features feed each other'
+    ],
+    render: () => `
+      ${nav('community')}
+      <div class="community-shell">
+        <div class="side filter-list">
+          <div class="filter-item active">Infant 0–5</div>
+          <div class="filter-item">Child 5–10</div>
+          <div class="filter-item">Teen 10–13</div>
+          <div class="filter-item">Teen 13–18</div>
+        </div>
+        <div class="feed-col">
+          <div class="page-title serif" style="font-size:20px;">Community · Infant 0–5</div>
+          <div class="page-sub" style="margin-bottom:10px;">1,204 parents in this stage</div>
+          <div class="post"><div class="who">Mei L. <span class="stage-tag">· Infant 0–5</span></div><div class="body">Anyone else's 8-month-old suddenly hate the car seat? Module 3 helped but curious what worked for you.</div><div class="meta">14 replies · 2h ago</div></div>
+          <div class="post"><div class="who">Farid A. <span class="stage-tag">· Infant 0–5</span></div><div class="body">Loved the "repair after conflict" lesson — first time I've felt okay about not being perfect every day.</div><div class="meta">6 replies · 5h ago</div></div>
+          <div class="post"><div class="who">Grace T. <span class="stage-tag">· Infant 0–5</span></div><div class="body">Booking a human support slot about sleep regression, will report back!</div><div class="meta">3 replies · 1d ago</div></div>
+        </div>
+        <div class="side-panel">
+          <div class="h">Online now</div>
+          <div class="online-row"><div class="avatar-sm"></div>Mei L.<span class="online-dot" style="margin-left:auto;"></span></div>
+          <div class="online-row"><div class="avatar-sm"></div>Grace T.<span class="online-dot" style="margin-left:auto;"></span></div>
+          <div style="margin-top:24px;"><button class="cta-btn" style="width:100%;" onclick="go(5)">Ask a specialist</button></div>
+        </div>
+      </div>
+    `
+  },
+  {
+    key: 'support', label: 'Human support', url: 'parent-u.com/app/support',
+    eyebrow: 'Page 6 — Human support', title: 'Where the humans come in',
+    body: 'This closes the loop back to "Balanced Teaching Mode." A parent can land here from a lesson, a community post, or on its own. It\'s the most expensive part of the product to deliver, so in the real build this is the page worth scoping most carefully — for now, it just needs to read as real.',
+    list: [
+      'Chat framing, not a form — matches the "human touch" positioning from the deck',
+      'This is also the natural place a psych / early-childhood-ed collaborator (Shannon\'s next step) would eventually sit as "the expert on the other end"'
+    ],
+    render: () => `
+      ${nav('support')}
+      <div class="support-shell">
+        <div class="specialist">
+          <div class="avatar-lg"></div>
+          <div style="font-weight:600; font-size:14px;">Dr. Aisha Rahman</div>
+          <div style="font-size:12px; color:var(--muted); margin-bottom:20px;">Early childhood specialist · online</div>
+          <button class="cta-btn ghost" style="width:100%; margin-bottom:8px;" onclick="go(3)">Back to lessons</button>
+          <button class="cta-btn ghost" style="width:100%;" onclick="go(4)">Back to community</button>
+        </div>
+        <div class="chat-col">
+          <div class="support-bubble">Hi! Saw your note about sleep regression — how many nights has this been going on?</div>
+          <div class="support-bubble human">About a week, she's waking every 2 hours 😩</div>
+          <div class="support-bubble">That's tough on everyone's sleep. Let's start with what her bedtime routine looks like right now.</div>
+          <div class="chat-input"><input type="text" placeholder="Type a message…" disabled><button class="cta-btn" onclick="go(0)">Send</button></div>
+        </div>
+      </div>
+    `
+  }
+];
+
+let current = 0;
+
+function buildRail(){
+  const rail = document.getElementById('rail');
+  rail.innerHTML = '';
+  steps.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'rail-step' + (i === current ? ' active' : '');
+    btn.onclick = () => go(i);
+    btn.innerHTML = `<div class="rail-dot">${i+1}</div><div class="rail-label">${s.label}</div>`;
+    rail.appendChild(btn);
+    if (i < steps.length - 1){
+      const c = document.createElement('div');
+      c.className = 'rail-connector';
+      rail.appendChild(c);
+    }
+  });
+}
+
+function selectCard(el){
+  el.parentElement.querySelectorAll('.stage-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function render(){
+  const s = steps[current];
+  document.getElementById('siteInner').innerHTML = s.render();
+  document.getElementById('urlBar').textContent = s.url;
+  document.getElementById('noteEyebrow').textContent = s.eyebrow;
+  document.getElementById('noteTitle').textContent = s.title;
+  document.getElementById('noteBody').textContent = s.body;
+  document.getElementById('noteList').innerHTML = s.list.map(li => `<li>${li}</li>`).join('');
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').textContent = (current === steps.length - 1) ? 'Restart' : 'Next step';
+  buildRail();
+}
+
+function go(i){
+  if (i === steps.length){ i = 0; }
+  current = Math.max(0, Math.min(steps.length - 1, i));
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => go(current - 1));
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (current === steps.length - 1) go(0);
+  else go(current + 1);
+});
+
+render();
+</script>
+</body>
+</html>
