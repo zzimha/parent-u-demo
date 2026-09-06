@@ -36,21 +36,42 @@
   }
 
   header.top{
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-soft) 100%);
+    border-radius:24px;
+    padding:56px 52px;
+    margin-bottom:40px;
     display:flex;
     justify-content:space-between;
     align-items:flex-end;
-    border-bottom:1px solid var(--line);
-    padding-bottom:20px;
-    margin-bottom:36px;
-    gap:24px;
+    gap:32px;
     flex-wrap:wrap;
   }
-  header.top h1{ font-size:26px; margin:0; letter-spacing:0.2px; }
-  header.top p{ margin:6px 0 0; color:var(--muted); font-size:14.5px; max-width:480px; }
-  .badge{
-    font-size:12.5px; color:var(--ink-soft); border:1px solid var(--line);
-    border-radius:100px; padding:6px 14px; background:var(--card); white-space:nowrap;
+  header.top .kicker{
+    color: #B9C4A8;
+    font-size:13.5px;
+    font-weight:600;
+    margin-bottom:14px;
   }
+  header.top h1{
+    font-size:46px;
+    line-height:1.08;
+    margin:0 0 16px;
+    color:#F6F5F2;
+    max-width:640px;
+  }
+  header.top p{
+    margin:0;
+    color:#C9CADA;
+    font-size:16px;
+    line-height:1.6;
+    max-width:460px;
+  }
+  .badge{
+    font-size:13px; color:#F6F5F2; border:1px solid rgba(246,245,242,0.35);
+    border-radius:100px; padding:9px 20px 9px 16px; background:rgba(246,245,242,0.08);
+    white-space:nowrap; display:flex; align-items:center; gap:8px;
+  }
+  .badge .dot{ width:7px; height:7px; border-radius:50%; background:var(--sage); flex-shrink:0; }
 
   /* ---- Flow rail ---- */
   .rail{ display:flex; align-items:center; gap:0; margin-bottom:40px; overflow-x:auto; padding-bottom:8px; }
@@ -222,10 +243,11 @@
 
   <header class="top">
     <div>
-      <h1 class="serif">Parent-U — website flow</h1>
-      <p>Same six-step journey, now as an actual site layout — this is the version worth pushing live on GitHub Pages.</p>
+      <div class="kicker">PARENT-U</div>
+      <h1 class="serif">Where we build relationships, not trophies.</h1>
+      <p>Click through exactly what a parent experiences — from the moment they land on the site to messaging a real specialist.</p>
     </div>
-    <div class="badge">6-step walkthrough</div>
+    <div class="badge"><span class="dot"></span>6 screens · click to explore</div>
   </header>
 
   <div class="rail" id="rail"></div>
